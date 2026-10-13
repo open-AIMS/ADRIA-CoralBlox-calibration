@@ -6,4 +6,4 @@
 #SBATCH --cpus-per-task=64          # CPUs per task (adjust as needed)
 #SBATCH --mem=256G                  # Memory
 
-julia --project=~/code/CoralBlox-params-calibration --threads=64 "$@"
+julia --project=~/code/ADRIA-CoralBlox-calibration --threads=64 "$@"
