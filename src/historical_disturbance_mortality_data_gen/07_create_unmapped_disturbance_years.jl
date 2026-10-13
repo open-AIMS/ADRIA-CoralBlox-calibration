@@ -3,7 +3,7 @@
 # year its impact first shows up in.
 #
 # NOT currently consumed anywhere - the calibration does not down-weight these observations.
-# See https://github.com/open-AIMS/CoralBlox-params-calibration/issues/26 for the proposed
+# See https://github.com/open-AIMS/ADRIA-CoralBlox-calibration/issues/26 for the proposed
 # down-weighting design; this file only identifies the affected (reef, year) cells.
 #
 # Storms ("s"), COTS ("c") and "multiple" ("m") are deliberately NOT here: they already carry
@@ -145,7 +145,7 @@ open(out_path, "w") do io
     println(io, "# ReefMonitoring \"unknown\"-type disturbances with NO mortality forcing in")
     println(io, "# historical_disturbance_mortality_rates.nc. `affected_year` is the first LTMP survey")
     println(io, "# year at or after `ddate`. Not currently consumed by the calibration - see")
-    println(io, "# https://github.com/open-AIMS/CoralBlox-params-calibration/issues/26.")
+    println(io, "# https://github.com/open-AIMS/ADRIA-CoralBlox-calibration/issues/26.")
     println(io, "# Generated: $(now())")
 end
 CSV.write(out_path, results; append=true, writeheader=true)
