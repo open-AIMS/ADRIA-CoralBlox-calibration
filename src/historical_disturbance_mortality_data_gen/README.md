@@ -162,7 +162,7 @@ new before merging it in. Not needed just to rerun the pipeline on already-curat
   implemented.** `background_growth_rates.csv` carries `lo`/`hi` columns regardless of width;
   nothing downstream currently checks them before use. Conscious call, not an oversight.
 - **Circular calibration_split.csv dependency fixed via a bare ADRIA domain**, not a change to
-  the shared `CoralBloxCalib.load_domain` wrapper (a wrapper-level fix was drafted and
+  the shared `ADRIACoralBloxCalibration.load_domain` wrapper (a wrapper-level fix was drafted and
   explicitly reverted in favor of scoping the fix to
   [base/generate_calibration_split.jl](base/generate_calibration_split.jl) only). Verified
   byte-identical output to a split built from a fully historical-data-attached domain.

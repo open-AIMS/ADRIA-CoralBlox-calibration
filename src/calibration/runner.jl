@@ -68,7 +68,7 @@ function _obj_func(
 
     scale_factors = get_scale_factors(local_dom, scen)
     corals = ADRIA.to_coral_spec(scen[1, :])
-    loc_k_areas = ADRIA.site_k_area(local_dom)
+    loc_k_areas = ADRIA.loc_k_area(local_dom)
     loc_areas = ADRIA.loc_area(local_dom)
     linear_ext = _to_group_size(corals.linear_extension)
 

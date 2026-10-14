@@ -2,13 +2,13 @@
 
 julia_version = "1.11.9"
 manifest_format = "2.0"
-project_hash = "dd50abde85047e6b9d9d2ca19d72da6a2a74a497"
+project_hash = "c8424f3c0850c30da1b596c2717c4efc5e117eea"
 
 [[deps.ADRIA]]
 deps = ["ADRIAIndicators", "ArchGDAL", "Bootstrap", "CSV", "Clustering", "Combinatorics", "CoralBlox", "CpuId", "DataFrames", "DataStructures", "Dates", "DimensionalData", "Distances", "Distributed", "Distributions", "FileIO", "Flatten", "GDAL_jll", "GeoDataFrames", "GeoFormatTypes", "GeoInterface", "Glob", "Graphs", "ImageIO", "Interpolations", "JMcDM", "JSON", "LERC_jll", "LinearAlgebra", "Logging", "ModelParameters", "NetCDF", "OnlineStats", "OrderedCollections", "Pkg", "PkgVersion", "PrecompileTools", "Printf", "ProgressMeter", "QuasiMonteCarlo", "Random", "Reexport", "RelocatableFolders", "Serialization", "Setfield", "SimpleWeightedGraphs", "SparseArrays", "SpecialFunctions", "StaticArrays", "Statistics", "StatsBase", "StatsFuns", "TOML", "YAXArrays", "Zarr"]
-git-tree-sha1 = "53d8004c890af597550e35804d71ba20563f3e99"
+git-tree-sha1 = "47bbda34666cd4ad2e144e1deebebe26e7df79d2"
 uuid = "7dc409a7-fbe5-4c9d-b3e2-b0c19a6ba600"
-version = "0.17.2"
+version = "0.19.0"
 weakdeps = ["BlackBoxOptim"]
 
 [[deps.ADRIAIndicators]]
@@ -32,16 +32,16 @@ version = "1.21.0"
     EnzymeCore = "f151be2c-9106-41f4-ab19-57ee4f262869"
 
 [[deps.AWS]]
-deps = ["Base64", "Compat", "Dates", "Downloads", "GitHub", "HTTP", "IniFile", "JSON", "MD5", "Mocking", "OrderedCollections", "Random", "SHA", "ScopedValues", "Sockets", "URIs", "UUIDs", "XMLDict"]
-git-tree-sha1 = "a3d648f4299291a48f0c5f66e388afb5641adb46"
+deps = ["Base64", "Compat", "Dates", "Downloads", "HTTP", "IniFile", "JSON", "MD5", "Mocking", "OrderedCollections", "Random", "SHA", "ScopedValues", "URIs", "UUIDs", "XMLDict"]
+git-tree-sha1 = "becfdb1a7117544aa30cce87cd7611df854a6858"
 uuid = "fbe9abb3-538b-5e4e-ba9e-bc94f4f92ebc"
-version = "1.98.1"
+version = "1.100.0"
 
 [[deps.AWSS3]]
-deps = ["AWS", "ArrowTypes", "Base64", "Compat", "Dates", "EzXML", "FilePathsBase", "HTTP", "MbedTLS", "Mocking", "OrderedCollections", "Retry", "SymDict", "URIs", "UUIDs", "XMLDict"]
-git-tree-sha1 = "87f2bb83e7721adf4ba31b50b325dd0691838e56"
+deps = ["AWS", "ArrowTypes", "Base64", "Compat", "Dates", "EzXML", "FilePathsBase", "HTTP", "Mocking", "OrderedCollections", "Retry", "SHA", "SymDict", "URIs", "UUIDs", "XMLDict"]
+git-tree-sha1 = "ad29c22d57542fef7a3dd343d240a9283c34378f"
 uuid = "1c724243-ef5b-51ab-93f4-b0a88ac62a95"
-version = "0.11.5"
+version = "0.11.7"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -334,9 +334,9 @@ weakdeps = ["SparseArrays"]
     ChainRulesCoreSparseArraysExt = "SparseArrays"
 
 [[deps.ChunkCodecCore]]
-git-tree-sha1 = "1a3ad7e16a321667698a19e77362b35a1e94c544"
+git-tree-sha1 = "3496e2b359c27793d12bec54ec94be7983a6ceb2"
 uuid = "0b6fb165-00bc-4d37-ab8b-79f91016dbe1"
-version = "1.0.1"
+version = "1.0.2"
 
 [[deps.ChunkCodecLibZlib]]
 deps = ["ChunkCodecCore", "Zlib_jll"]
@@ -459,9 +459,10 @@ uuid = "95dc2771-c249-4cd0-9c9f-1f3b4330693c"
 version = "0.1.6"
 
 [[deps.ConcreteStructs]]
-git-tree-sha1 = "804fc3ca1cbfdd5aa52ae3149c0cb0555f875eec"
+deps = ["PrecompileTools"]
+git-tree-sha1 = "a72c3b5ce6d2a477f55b5c9b8756e91e695c67f6"
 uuid = "2569d6c7-a4a2-43d3-a901-331e8e4be471"
-version = "0.2.7"
+version = "0.2.8"
 
 [[deps.ConcurrentUtilities]]
 deps = ["Serialization", "Sockets"]
@@ -502,10 +503,10 @@ weakdeps = ["Makie"]
     CoralBloxPlotExt = "Makie"
 
 [[deps.CpuId]]
-deps = ["Markdown"]
-git-tree-sha1 = "fcbb72b032692610bfbdb15018ac16a36cf2e406"
+deps = ["Markdown", "PrecompileTools"]
+git-tree-sha1 = "5dbd5150b96f29553fc3b553c6bfb0eadf7ac204"
 uuid = "adafc99b-e345-5852-983c-f28acb93d879"
-version = "0.3.1"
+version = "0.3.3"
 
 [[deps.Crayons]]
 git-tree-sha1 = "249fe38abf76d48563e2f4556bebd215aa317e15"
@@ -1023,12 +1024,6 @@ git-tree-sha1 = "6570366d757b50fabae9f4315ad74d2e40c0560a"
 uuid = "59f7168a-df46-5410-90c8-f2779963d0ec"
 version = "5.2.3+0"
 
-[[deps.GitHub]]
-deps = ["Base64", "Dates", "HTTP", "JSON", "MbedTLS", "Sockets", "SodiumSeal", "URIs"]
-git-tree-sha1 = "33de1bc5665494f0a9669fd6027e28180709d874"
-uuid = "bc5e4493-9b4d-5f90-b8aa-2b2bcaad7a26"
-version = "5.13.0"
-
 [[deps.Glib_jll]]
 deps = ["Artifacts", "GettextRuntime_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Libiconv_jll", "Libmount_jll", "PCRE2_jll", "Zlib_jll"]
 git-tree-sha1 = "6b4d2dc81736fe3980ff0e8879a9fc7c33c44ddf"
@@ -1313,9 +1308,9 @@ version = "1.7.1"
 
 [[deps.JMcDM]]
 deps = ["Requires"]
-git-tree-sha1 = "979229c5c01c249f550b0f596e61ceb153dcc7e6"
+git-tree-sha1 = "ee1fc1d38d944ab0f81b4bc32aec06183fc9106a"
 uuid = "358108f5-d052-4d0a-8344-d5384e00c0e5"
-version = "0.8.3"
+version = "0.8.5"
 
 [[deps.JSON]]
 deps = ["Dates", "Mmap", "Parsers", "Unicode"]
@@ -2218,12 +2213,6 @@ version = "1.5.0"
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
 version = "1.11.0"
 
-[[deps.SodiumSeal]]
-deps = ["Base64", "Libdl", "libsodium_jll"]
-git-tree-sha1 = "80cef67d2953e33935b41c6ab0a178b9987b1c99"
-uuid = "2133526b-2bfb-4018-ac12-889fb3908a75"
-version = "0.1.1"
-
 [[deps.SortTileRecursiveTree]]
 deps = ["AbstractTrees", "Extents", "GeoInterface"]
 git-tree-sha1 = "f9aa6616a9b3bd01f93f27c010f1d25fc5a094a9"
@@ -2670,9 +2659,9 @@ version = "0.9.6"
 
 [[deps.ZipArchives]]
 deps = ["ArgCheck", "CodecInflate64", "CodecZlib", "InputBuffers", "PrecompileTools", "TranscodingStreams", "Zlib_jll"]
-git-tree-sha1 = "83f728ecb873c58b794964f8b4bed811814d4b0d"
+git-tree-sha1 = "3e6acd912522133953125645b263934ae2ac745e"
 uuid = "49080126-0e18-4c2a-b176-c102e4b3760c"
-version = "2.6.0"
+version = "2.6.1"
 
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
@@ -2749,12 +2738,6 @@ deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "libpng_jll"]
 git-tree-sha1 = "c1733e347283df07689d71d61e14be986e49e47a"
 uuid = "075b6546-f08a-558a-be8f-8157d0f608a5"
 version = "1.10.5+0"
-
-[[deps.libsodium_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "011b0a7331b41c25524b64dc42afc9683ee89026"
-uuid = "a9144af2-ca23-56d9-984f-0d03f7b5ccf8"
-version = "1.0.21+0"
 
 [[deps.libva_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll", "Xorg_libXext_jll", "Xorg_libXfixes_jll", "libdrm_jll"]

@@ -1,6 +1,6 @@
-using CoralBloxCalib
-using CoralBloxCalib.common
-using CoralBloxCalib.calibration
+using ADRIACoralBloxCalibration
+using ADRIACoralBloxCalibration.common
+using ADRIACoralBloxCalibration.calibration
 
 config = load_config(joinpath(@__DIR__, "..", "config.toml"))
 dom = load_domain(config)

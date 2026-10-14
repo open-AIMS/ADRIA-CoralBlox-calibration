@@ -224,7 +224,7 @@ function plot_modelled_v_ltmp!(
     opts::Dict{Symbol,Any}=Dict{Symbol,Any}()
 )
     domain_loc_idx::Int64 = ltmp_cover_idx_to_domain(observations, ltmp_loc_idx)
-    loc_k_area = ADRIA.site_k_area(dom)[domain_loc_idx]
+    loc_k_area = ADRIA.loc_k_area(dom)[domain_loc_idx]
     loc_area = ADRIA.loc_area(dom)[domain_loc_idx]
 
     loc_cover = dropdims(

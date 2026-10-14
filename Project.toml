@@ -1,4 +1,4 @@
-name = "CoralBloxCalib"
+name = "ADRIACoralBloxCalibration"
 uuid = "1b083494-4cef-49eb-9786-fb478ff29e4a"
 version = "0.5.1"
 
@@ -36,7 +36,7 @@ YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 
 [compat]
 julia = "1.11"
-ADRIA = "0.17"
+ADRIA = "0.19"
 Bootstrap = "2.4.0"
 CoralBlox = "1"
 Random = "1.11.0"

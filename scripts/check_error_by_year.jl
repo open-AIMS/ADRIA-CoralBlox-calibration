@@ -14,10 +14,10 @@ Re-run this whenever the loss function or model changes materially, to confirm t
 assumption still holds.
 """
 
-using CoralBloxCalib
-using CoralBloxCalib.common
-using CoralBloxCalib.calibration
-using CoralBloxCalib.viz
+using ADRIACoralBloxCalibration
+using ADRIACoralBloxCalibration.common
+using ADRIACoralBloxCalibration.calibration
+using ADRIACoralBloxCalibration.viz
 using ADRIA
 using Serialization
 using StatsBase
@@ -44,7 +44,7 @@ res = progress_run(
     calib_data.calibration_store, cfg.biogroups_ordering
 )
 
-loc_k_areas = ADRIA.site_k_area(dom)
+loc_k_areas = ADRIA.loc_k_area(dom)
 loc_areas = ADRIA.loc_area(dom)
 loc_cover = dropdims(sum(res.raw; dims=(2, 3)); dims=(2, 3)) .* loc_k_areas' ./ loc_areas'
 

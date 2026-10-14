@@ -14,7 +14,7 @@ end
     write_params_metadata(dat_path::String, n_params::Int)::Nothing
 
 Write a `.meta.toml` sidecar next to `dat_path` recording the parameter count, current
-`PARAM_SCHEMA_VERSION`, and the `CoralBloxCalib` package version that produced it, so
+`PARAM_SCHEMA_VERSION`, and the `ADRIACoralBloxCalibration` package version that produced it, so
 `load_calibrated_params` can later tell whether a serialised result predates a
 parameter-space change.
 """

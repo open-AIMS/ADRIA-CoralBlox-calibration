@@ -52,12 +52,12 @@ Two required inputs are not bundled and must be obtained separately (see
 - `rme_domain` — a ReefMod Engine data package, available on request or via the RRAP
   M&DS Data Store.
 
-This repo is also a Julia package (`CoralBloxCalib`). After instantiation you can load it
+This repo is also a Julia package (`ADRIACoralBloxCalibration`). After instantiation you can load it
 directly in a REPL session:
 
 ```julia-repl
-julia> using CoralBloxCalib          # types, helpers
-julia> import CoralBloxCalib.viz     # plotting submodule
+julia> using ADRIACoralBloxCalibration          # types, helpers
+julia> import ADRIACoralBloxCalibration.viz     # plotting submodule
 ```
 
 ## Running scripts
@@ -65,7 +65,7 @@ julia> import CoralBloxCalib.viz     # plotting submodule
 ### Running calibration
 
 ```julia-repl
-julia> using CoralBloxCalib, CoralBloxCalib.common, CoralBloxCalib.calibration
+julia> using ADRIACoralBloxCalibration, ADRIACoralBloxCalibration.common, ADRIACoralBloxCalibration.calibration
 julia> config = load_config("path/to/config.toml")  # e.g. joinpath(@__DIR__, "config.toml")
 julia> dom = load_domain(config)
 julia> location_classification = load_location_classification(config.loc_class_path)
@@ -84,7 +84,7 @@ julia> run_calibration(
 `src/common/calib_setup.jl`); `load_domain` loads the ADRIA RME domain and attaches historical
 DHW/cyclone data. `CalibConfig` builds parameter bounds/ordering and `build_calibration_data`
 splits LTMP/composition data into calibration/test/combined `LocationDataStore`s before
-`CoralBloxCalib.calibration.run_calibration` runs BlackBoxOptim. See `scripts/run_loc_calib.jl`
+`ADRIACoralBloxCalibration.calibration.run_calibration` runs BlackBoxOptim. See `scripts/run_loc_calib.jl`
 for the equivalent non-interactive entry point.
 
 ### Results analysis and plots
@@ -150,7 +150,7 @@ and constructs the domain, scenarios and scale factors required to perform a mod
 ## Useful Variables
 
 After `config = load_config()` and `dom = load_domain(config)` (both exported from
-`CoralBloxCalib.common`, see [Running calibration](#running-calibration)):
+`ADRIACoralBloxCalibration.common`, see [Running calibration](#running-calibration)):
 
 - `dom` — ADRIA reefmod domain, with historical DHW/cyclone data attached
 - `config.rng_seed`, `config.out_dir`, `config.ltmp_reef_data_path`, etc. — resolved
@@ -169,7 +169,7 @@ config.ltmp_shp_path)`, called from `scripts/plot/viz_results.jl`.
 
 After additionally building `cfg = CalibConfig(dom)` and
 `calib_data = build_calibration_data(dom, config.ltmp_reef_data_path, config.composition_path)`
-(both exported from `CoralBloxCalib.calibration`):
+(both exported from `ADRIACoralBloxCalibration.calibration`):
 
 - `cfg.sample_bounds`, `cfg.biogroups_ordering`, `cfg.param_idxs`, `cfg.coral_param_names`,
   `cfg.growth_accel_names`, `cfg.depth_atten_names`, `cfg.dist_std_names`,

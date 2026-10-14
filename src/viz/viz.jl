@@ -16,7 +16,7 @@ using YAXArrays
 using ProgressMeter
 using CSV
 
-import ..CoralBloxCalib:
+import ..ADRIACoralBloxCalibration:
     LocationDataStore,
     ltmp_cover_idx_to_domain,
     composition_idx_to_domain,

@@ -75,7 +75,7 @@ function location_comparison(
     obs_data=raw_ltmp_reef_data,
     obs_idxs=ltmp_reefmod_idxs,
     obs_loc_labels=ltmp_reef_data.RME_UNIQUE_ID,
-    loc_k_areas=site_k_area(dom),
+    loc_k_areas=loc_k_area(dom),
     loc_areas=site_area(dom)
 )::Figure
     loc_cover = dropdims(sum(raw_data, dims=2), dims=2) .* loc_k_areas' ./ loc_areas'
