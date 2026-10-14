@@ -258,10 +258,10 @@ function copy(dom::RMEDomain)::RMEDomain
         dom.dhw_scens,
         dom.wave_scens,
         dom.cyclone_mortality_scens,
-        dom.seed_target_locations,
-        dom.fog_target_locations,
-        dom.mc_target_locations,
-        dom.shade_target_locations,
+        dom.CAq_target_locations,
+        dom.Fog_target_locations,
+        dom.LvM_target_locations,
+        dom.Shd_target_locations,
         dom.model,
         dom.sim_constants
     )

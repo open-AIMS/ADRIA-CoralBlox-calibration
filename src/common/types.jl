@@ -1,8 +1,8 @@
 """
 Shared data types for the calibration pipeline.
 
-Extracted from common.jl so that CoralBloxCalib (and its submodules) can
-define these types once and all scripts can obtain them via `using CoralBloxCalib`.
+Extracted from common.jl so that ADRIACoralBloxCalibration (and its submodules) can
+define these types once and all scripts can obtain them via `using ADRIACoralBloxCalibration`.
 """
 
 """

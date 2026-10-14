@@ -15,7 +15,7 @@ using Bootstrap
 
 import Base: copy
 
-import ..CoralBloxCalib:
+import ..ADRIACoralBloxCalibration:
     LocationDataStore,
     ltmp_cover_idx_to_domain,
     composition_idx_to_domain,

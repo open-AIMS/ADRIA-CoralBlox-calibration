@@ -12,7 +12,7 @@ using CSV
 using BlackBoxOptim
 import CairoMakie
 
-import ..CoralBloxCalib: LocationDataStore
+import ..ADRIACoralBloxCalibration: LocationDataStore
 
 using ..common
 using ..viz

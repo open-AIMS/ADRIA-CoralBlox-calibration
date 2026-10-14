@@ -1,4 +1,4 @@
-module CoralBloxCalib
+module ADRIACoralBloxCalibration
 
 using ADRIA
 using DataFrames

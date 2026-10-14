@@ -219,7 +219,7 @@ function plot_all_regions(
     fig_size=(800, 800)
 )::Figure
     s_rac = (dropdims(sum(raw_data, dims=(2, 3)), dims=(2, 3)) .*
-             ADRIA.site_k_area(dom)') ./
+             ADRIA.loc_k_area(dom)') ./
             ADRIA.loc_area(dom)'
 
     north_res = ADRIA.DataCube(s_rac[:, region_masks[1]];

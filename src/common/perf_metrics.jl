@@ -100,7 +100,7 @@ function calib_func(sim, obs)
 end
 
 function _loc_cover(raw_data, dom)
-    loc_k_areas = ADRIA.site_k_area(dom)
+    loc_k_areas = ADRIA.loc_k_area(dom)
     loc_areas = ADRIA.loc_area(dom)
     dropdims(sum(raw_data, dims=(2, 3)), dims=(2, 3)) .* loc_k_areas' ./ loc_areas'
 end

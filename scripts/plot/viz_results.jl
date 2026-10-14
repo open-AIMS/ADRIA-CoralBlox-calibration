@@ -11,10 +11,10 @@ using YAXArrays
 using DataFrames
 using Serialization: deserialize
 
-using CoralBloxCalib
-import CoralBloxCalib.viz
-using CoralBloxCalib.common
-using CoralBloxCalib.calibration
+using ADRIACoralBloxCalibration
+import ADRIACoralBloxCalibration.viz
+using ADRIACoralBloxCalibration.common
+using ADRIACoralBloxCalibration.calibration
 using CairoMakie: save
 
 config = load_config(joinpath(@__DIR__, "..", "..", "config.toml"))
