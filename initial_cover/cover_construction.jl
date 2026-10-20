@@ -72,7 +72,7 @@ function compute_cover(
     n_locations::Int64
 )::Matrix{Float64}
     n_location_types = maximum(location_types)
-    bin_edges::Matrix{Float64} = ADRIA.bin_edges()
+    bin_edges::Matrix{Float64} = ADRIA.bin_edges().data
     n_taxa::Int64 = size(bin_edges, 1)
     n_size_classes::Int64 = size(bin_edges, 2) - 1
     temporary_cover::Matrix{Float64} = zeros(Float64, n_size_classes, n_taxa)

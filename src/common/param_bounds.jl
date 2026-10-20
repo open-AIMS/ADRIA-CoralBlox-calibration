@@ -203,6 +203,8 @@ function insert_init_loc_cover!(
     observations::LocationDataStore,
     biogroup_ord::Vector{Int64}
 )::Nothing
+    bin_edges::Matrix{Float64} = ADRIA.bin_edges().data
+
     # Change the coral composition of location for which we have data
     for (idx, dom_idx) in enumerate(observations.composition_to_domain)
         # Maintain the original cover levels but change the composition
@@ -210,13 +212,14 @@ function insert_init_loc_cover!(
         non_missing_idx::Int64 = findfirst(
             x -> !ismissing(x), observations.coral_composition[:, 1, idx]
         )
-        size_class_props = size_class_distribution(
-            lambdas[findfirst(biogroup_ord .== dom.loc_data.CB_CALIB_GROUPS[dom_idx])],
-            ADRIA.bin_edges()[1, :]
+        lambda = lambdas[findfirst(biogroup_ord .== dom.loc_data.CB_CALIB_GROUPS[dom_idx])]
+        # Each taxon is split with its own bin edges, dimensions [n_taxa ⋅ n_sizes]
+        size_class_props = reduce(
+            vcat, [size_class_distribution(lambda, bin_edges[taxa, :])' for taxa in axes(bin_edges, 1)]
         )
         loc_cov = observations.coral_composition[
             non_missing_idx, :, idx
-        ] .* size_class_props' ./ sum(observations.coral_composition[non_missing_idx, :, idx])
+        ] .* size_class_props ./ sum(observations.coral_composition[non_missing_idx, :, idx])
         dom.init_coral_cover[:, dom_idx] .=
             reshape(permutedims(loc_cov, (2, 1)), (N_PARAMS,)) .* tmp_cover
     end
