@@ -10,15 +10,30 @@ struct CalibConfig
 end
 
 function CalibConfig(dom)::CalibConfig
+    # Snapshot of `ADRIA.linear_extensions()` (m/yr) on 2026-10-26, the values the current
+    # size class widths were derived from. Hard-coded so the search box does not drift with
+    # ADRIA's defaults, which are themselves a calibration output.
     linear_extension_mean = [
-        0.0245124 0.0507098 0.0501524 0.0637291 0.0672375 0.0779938 0.0
-        0.024296  0.0286086 0.0278468 0.0285766 0.0314185 0.0364447 0.0
-        0.0175738 0.0168217 0.0150495 0.0165701 0.0165701 0.0165701 0.0
-        0.0116048 0.00747208 0.00748131 0.00942616 0.0133995 0.0141176 0.0
-        0.011934  0.00747208 0.00748131 0.00942616 0.0133995 0.0141176 0.0
+        0.0266831 0.0456663   0.055042   0.0699477 0.0631659 0.0726078 0.0
+        0.0267012 0.0314565   0.0305842  0.0312019 0.0343453 0.0392649 0.0
+        0.0192487 0.0183389   0.016142   0.0181973 0.0178266 0.0160711 0.0
+        0.0127533 0.00815496  0.00798983 0.0100552 0.0143346 0.0153482 0.0
+        0.0127479 0.00800844  0.00814327 0.0100825 0.0146049 0.0154561 0.0
     ]
-    lin_ext_lb = flatten_group_size(linear_extension_mean[:, :] .* LIN_EXT_LB_FACTOR)
-    lin_ext_ub = flatten_group_size(linear_extension_mean[:, :] .* LIN_EXT_UB_FACTOR)
+    # Size classes 2 onwards cannot be skipped within a timestep, so their upper bound is
+    # also limited to the base linear extension that keeps the worst-case effective rate
+    # (base x scale x (1 + growth acceleration height)) within the class width. Class 1 and
+    # the terminal class have no such limit.
+    worst_case_growth = LIN_EXT_SCALE_UB * (1.0 + last(GROWTH_ACCEL_HEIGHT_BOUNDS))
+    growing_classes = 2:(N_SIZE_CLASSES - 1)
+    lin_ext_ub_matrix = linear_extension_mean .* LIN_EXT_UB_FACTOR
+    lin_ext_ub_matrix[:, growing_classes] .= min.(
+        lin_ext_ub_matrix[:, growing_classes],
+        ADRIA.bin_widths().data[:, growing_classes] ./ worst_case_growth
+    )
+
+    lin_ext_lb = flatten_group_size(linear_extension_mean .* LIN_EXT_LB_FACTOR)
+    lin_ext_ub = flatten_group_size(lin_ext_ub_matrix)
 
     mb_rate_mean = [
         0.312661  0.194444  0.211039   0.192857   0.157895   0.142857   0.142857

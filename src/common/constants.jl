@@ -41,11 +41,13 @@ const N_GROWTH_ACCEL_PARAMS = 3
 
 # --- Parameter bound constants (param_bounds.jl) ----------------------------
 
-# Linear extension / background mortality bounds: +/-10% of the EcoRRAP mean
-const LIN_EXT_LB_FACTOR = 0.9
-const LIN_EXT_UB_FACTOR = 1.1
-const MB_RATE_LB_FACTOR = 0.9
-const MB_RATE_UB_FACTOR = 1.1
+# Linear extension / background mortality bounds: +/-20% of the mean. From size class 2
+# onwards the linear extension upper bound is also limited to the largest base value that
+# keeps worst-case growth within the class width (see CalibConfig).
+const LIN_EXT_LB_FACTOR = 0.8
+const LIN_EXT_UB_FACTOR = 1.2
+const MB_RATE_LB_FACTOR = 0.8
+const MB_RATE_UB_FACTOR = 1.2
 
 # Linear extension scale factor bounds
 const LIN_EXT_SCALE_LB = 0.7
@@ -104,6 +106,7 @@ const N_DIST_STD_PARAMS = N_TAXA
 
 # Serialized-parameter-vector schema version, recorded in each result's `.meta.toml`
 # sidecar (see `write_params_metadata`/`load_calibrated_params`). Bump whenever
-# CalibConfig's param_idxs/sample_bounds shape changes, so older serialized results are
-# rejected rather than silently reinterpreted under the current schema.
-const PARAM_SCHEMA_VERSION = 6
+# CalibConfig's param_idxs/sample_bounds shape changes, or ADRIA's size class edges change
+# (per-size-class values are meaningless under different edges), so older serialized
+# results are rejected rather than silently reinterpreted under the current schema.
+const PARAM_SCHEMA_VERSION = 7
