@@ -82,6 +82,19 @@ mkpath(OUT_DIR)
 f_obs_loc_map = viz.plot_observation_locs(calib_data.calibration_store, calib_data.test_store)
 save(joinpath(OUT_DIR, "obs_loc_map.png"), f_obs_loc_map)
 
+# Calibrated parameters (from calibrated_params.nc) against their search bounds. The
+# initial size-class lambdas are not stored in the NetCDF, so they are not plotted.
+plot_cfg = CalibConfig(dom)
+f_params = viz.plot_calibrated_params(
+    viz.params_vector_from_dataset(
+        open_dataset(CALIB_PARAMS_FN), length(plot_cfg.sample_bounds),
+        plot_cfg.param_idxs, plot_cfg.coral_param_names
+    ),
+    plot_cfg.sample_bounds, plot_cfg.param_idxs, plot_cfg.coral_param_names,
+    plot_cfg.growth_accel_names, plot_cfg.depth_atten_names, plot_cfg.biogroups_ordering
+)
+save(joinpath(OUT_DIR, "calibrated_params.png"), f_params)
+
 # Functional group cover proportions
 f_taxa_cover = viz.taxa_cover_proportions(rs_raw.raw)
 save(joinpath(OUT_DIR, "locs_taxa_cov.png"), f_taxa_cover)
