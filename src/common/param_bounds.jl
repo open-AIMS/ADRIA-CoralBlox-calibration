@@ -177,7 +177,7 @@ function set_bounds!(
     upper_bounds::Vector{Float64}
 )::Nothing
     if any(lower_bounds .> upper_bounds)
-        msg = "At least one lower bound given is less then the corresponding upper bound"
+        msg = "At least one lower bound given is greater than the corresponding upper bound"
         throw(ArgumentError(msg))
     end
     sample_bounds[coral_param_idxs] .= collect(zip(lower_bounds, upper_bounds))

@@ -31,16 +31,20 @@ end
 """
     validate_linear_extension_coefficients(linear_ext_vals, linear_ext_coefs)::Float64
 
-Return total excess above size-class bin widths across all locations. Returns 0.0 when valid.
+Return total excess above size-class bin widths across all locations, for size classes 2
+onwards. Returns 0.0 when valid.
+
+Size class 1 is not checked: blocks that outgrow it move wholesale into class 2, so it
+cannot be skipped.
 """
 function validate_linear_extension_coefficients(
     linear_ext_vals::Matrix{Float64},
     linear_ext_coefs::Matrix{Float64}
 )::Float64
-    size_class_bins = ADRIA.bin_widths()
+    size_class_bins = ADRIA.bin_widths().data[:, 2:end]
     dist_from_valid = 0.0
     for j in 1:size(linear_ext_coefs, 2)
-        tmp = (linear_ext_vals .* linear_ext_coefs[:, j]) .- size_class_bins
+        tmp = (linear_ext_vals[:, 2:end] .* linear_ext_coefs[:, j]) .- size_class_bins
         tmp[tmp .< 0] .= 0.0
         dist_from_valid += sum(tmp)
     end
