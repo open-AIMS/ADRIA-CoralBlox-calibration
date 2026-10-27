@@ -28,6 +28,7 @@ include("calib_setup.jl")
 include("cover_construction.jl")
 include("bootstrap_stats.jl")
 include("perf_metrics.jl")
+include("dist_mean_penalty.jl")
 include("param_bounds.jl")
 include("params_extraction.jl")
 include("params_metadata.jl")
@@ -96,6 +97,9 @@ export LocationDataStore,
        DHW_TOL_MEAN_UB_FACTOR,
        DHW_TOL_STD_LB_FACTOR,
        DHW_TOL_STD_UB_FACTOR,
+       DIST_MEAN_ORDER_SCALE,
+       DIST_MEAN_ORDER_WEIGHT,
+       dist_mean_order_penalty,
        N_DIST_MEAN_PARAMS,
        N_DIST_STD_PARAMS,
        DEPTH_ATTEN_PARAM_NAMES,

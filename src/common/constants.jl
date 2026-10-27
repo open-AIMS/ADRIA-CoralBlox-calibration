@@ -100,6 +100,14 @@ const DHW_TOL_MEAN_UB_FACTOR = 1.5
 const DHW_TOL_STD_LB_FACTOR = 0.75
 const DHW_TOL_STD_UB_FACTOR = 1.25
 
+# Penalty on initial `dist_mean` values that break the expected order across groups (tabular
+# Acropora < corymbose groups < massives, see `dist_mean_order_penalty`). `SCALE` is
+# roughly the mean of the :legacy `dist_mean` anchors (DHW-weeks) and fixes the normalisation
+# across candidates. `WEIGHT` was chosen to be of the order of the `fg_corr * 2.0` objective
+# term; it is not tuned against logged objective values.
+const DIST_MEAN_ORDER_SCALE = 5.0
+const DIST_MEAN_ORDER_WEIGHT = 2.0
+
 # Number of calibrated `dist_mean` / `dist_std` values: one per functional group each
 const N_DIST_MEAN_PARAMS = N_TAXA
 const N_DIST_STD_PARAMS = N_TAXA

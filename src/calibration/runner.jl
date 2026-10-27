@@ -75,6 +75,7 @@ function _obj_func(
     loc_k_areas = ADRIA.loc_k_area(local_dom)
     loc_areas = ADRIA.loc_area(local_dom)
     linear_ext = _to_group_size(corals.linear_extension)
+    dist_mean_penalty = dist_mean_order_penalty(_to_group_size(Float64.(corals.dist_mean))[:, 1])
 
     validity_violation = validate_linear_extension_coefficients(linear_ext, scale_factors[:, 1, :]) +
                          validate_gbr_wide_scalar_mean(scale_factors[:, 1, :], scale_factors[:, 2, :])
@@ -132,7 +133,8 @@ function _obj_func(
     return reef_perf +
             mean(abs.(modelled_peaks .- obs_peaks)) * 0.5 +
             mean(abs.(modelled_troughs .- obs_troughs)) * 0.5 +
-            fg_corr * 2.0
+            fg_corr * 2.0 +
+            DIST_MEAN_ORDER_WEIGHT * dist_mean_penalty
 end
 
 mutable struct _StagnationState
