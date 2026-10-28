@@ -32,7 +32,7 @@ function CalibConfig(dom)::CalibConfig
         ADRIA.bin_widths().data[:, growing_classes] ./ worst_case_growth
     )
 
-    lin_ext_lb = flatten_group_size(linear_extension_mean .* LIN_EXT_LB_FACTOR)
+    lin_ext_lb = flatten_group_size(linear_extension_mean .* collect(LIN_EXT_LB_FACTORS))
     lin_ext_ub = flatten_group_size(lin_ext_ub_matrix)
 
     mb_rate_mean = [
@@ -42,8 +42,8 @@ function CalibConfig(dom)::CalibConfig
         0.238342  0.0799508 0.0446043  0.026387   0.0135135  0.016      0.0272109
         0.282609  0.0799508 0.0446043  0.026387   0.0135135  0.016      0.0272109
     ]
-    mb_rate_lb = flatten_group_size(mb_rate_mean[:, :] .* MB_RATE_LB_FACTOR)
-    mb_rate_ub = flatten_group_size(mb_rate_mean[:, :] .* MB_RATE_UB_FACTOR)
+    mb_rate_lb = flatten_group_size(clamp.(mb_rate_mean .* MB_RATE_LB_FACTOR, 0.0, 1.0))
+    mb_rate_ub = flatten_group_size(clamp.(mb_rate_mean .* MB_RATE_UB_FACTOR, 0.0, 1.0))
 
     all_coral_params = ADRIA.component_params(ADRIA.model_spec(dom), ADRIA.Coral)
 

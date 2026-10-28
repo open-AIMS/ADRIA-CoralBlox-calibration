@@ -41,13 +41,18 @@ const N_GROWTH_ACCEL_PARAMS = 3
 
 # --- Parameter bound constants (param_bounds.jl) ----------------------------
 
-# Linear extension / background mortality bounds: +/-20% of the mean. From size class 2
-# onwards the linear extension upper bound is also limited to the largest base value that
-# keeps worst-case growth within the class width (see CalibConfig).
-const LIN_EXT_LB_FACTOR = 0.8
+# Linear extension bounds, as factors of the base value. The lower factor is per functional
+# group (tabular, corymbose Acropora, corymbose non-Acropora, small massives, large massives):
+# the box is proportional to the base value, so the slow-growing massives would otherwise get
+# the narrowest absolute range and need a wider relative one. From size class 2 onwards the
+# upper bound is also limited to the largest base value that keeps worst-case growth within the
+# class width (see CalibConfig).
+const LIN_EXT_LB_FACTORS = (0.7, 0.7, 0.7, 0.5, 0.5)
 const LIN_EXT_UB_FACTOR = 1.2
-const MB_RATE_LB_FACTOR = 0.8
-const MB_RATE_UB_FACTOR = 1.2
+
+# Background mortality bounds: +/-30% of the base value, capped to the valid [0, 1] range
+const MB_RATE_LB_FACTOR = 0.7
+const MB_RATE_UB_FACTOR = 1.3
 
 # Linear extension scale factor bounds
 const LIN_EXT_SCALE_LB = 0.7
