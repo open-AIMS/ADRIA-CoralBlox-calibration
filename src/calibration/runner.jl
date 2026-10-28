@@ -357,6 +357,7 @@ function run_calibration(
         dom, init_cover, location_classification, best_params, cfg.param_idxs,
         cfg.coral_param_names, cfg.growth_accel_names, cfg.depth_atten_names,
         calib_data.combined_store, cfg.biogroups_ordering;
+        dist_std_names=cfg.dist_std_names, dist_mean_names=cfg.dist_mean_names,
         out_dir=out_dir
     )
 

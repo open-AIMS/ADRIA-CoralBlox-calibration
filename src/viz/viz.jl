@@ -106,6 +106,7 @@ include("regional_analysis_plots.jl")
 include("metric_analysis_plots.jl")
 include("location_timeseries_plots.jl")
 include("calibrated_params_plot.jl")
+include("heat_tolerance_plot.jl")
 
 # ----- Exports ----------------------------------------------------------------
 
@@ -135,6 +136,8 @@ export LocationDataStore,
        save_metric_analysis_plots,
        save_location_timeseries_plots,
        plot_calibrated_params,
+       mean_heat_tolerance_by_group_size,
+       plot_heat_tolerance_timeseries,
        RegionalAnalysisData,
        load_regional_analysis_data
 

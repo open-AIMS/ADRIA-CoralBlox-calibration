@@ -30,6 +30,7 @@ include("bootstrap_stats.jl")
 include("perf_metrics.jl")
 include("dist_mean_penalty.jl")
 include("param_bounds.jl")
+include("dist_mean_end_of_history.jl")
 include("params_extraction.jl")
 include("params_metadata.jl")
 
@@ -121,6 +122,7 @@ export LocationDataStore,
        setup_run,
        build_params_dataset,
        build_init_cover_dataset,
+       end_of_history_dist_mean,
        export_calibration_products,
        CalibrationConfig,
        load_config,

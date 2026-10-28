@@ -89,21 +89,48 @@ for the equivalent non-interactive entry point.
 
 ### Results analysis and plots
 
-```julia-repl
-julia> include("scripts/plot/viz_results.jl")
+`scripts/plot/viz_results.jl` plots the results of a calibration into `config.out_dir`. By default
+it only draws the figures that are **missing**, so it is cheap to call again after a change:
+
+```sh
+# from the repository root
+julia --project=. scripts/plot/viz_results.jl                  # only the missing figures
+julia --project=. scripts/plot/viz_results.jl heat_tolerance   # exactly this figure (even if present)
+julia --project=. scripts/plot/viz_results.jl --force          # redo every figure
+julia --project=. scripts/plot/viz_results.jl --list           # show which figures exist
 ```
 
-The script is read-only with respect to calibration state: it consumes the two NetCDF
-products written by `run_calibration` (`{out_dir}/params/calibrated_params.nc` and
-`{out_dir}/params/historic_init_cover.nc`, see [Parameter Extraction](#parameter-extraction))
-and writes plots only. It does **not** read `results.dat` or `init_cover.dat`, and does not
-need `CalibConfig`/`setup_run`: `calibrated_params.nc` is handed to ADRIA as
-`load_domain(config; calib_params_fn=...)`, so `ADRIA.param_table(dom)` already returns the
-calibrated scenario. It errors up front if either product is missing.
+Several names can be given at once (`... calibrated_params heat_tolerance`). Naming a figure always
+redoes it, overwriting the existing file. The available figures are:
 
-Outputs are organised into subdirectories under `out_dir`: `regional_analysis/`, `metrics/`,
-`calibration_locations/`, `test_locations/`. Any plots already in those directories
-will be **overwritten**.
+| Name | Output (under `out_dir`) |
+|---|---|
+| `obs_loc_map` | `obs_loc_map.png` |
+| `calibrated_params` | `calibrated_params.png` (parameters against their search bounds; for `dist_mean`, the initial value as a dot and the end-of-history value per size class as diamonds) |
+| `taxa_cover`, `taxa_pop`, `size_class` | `locs_taxa_cov.png`, `locs_taxa_pop.png`, `locs_size.png` |
+| `heat_tolerance` | `heat_tolerance_by_group_size.png` (mean heat tolerance over time, 5 groups x size classes 1-6) |
+| `regional` | `regional_analysis/` |
+| `metrics` | `metrics/` |
+| `location_timeseries` | `calibration_locations/`, `test_locations/` |
+| `summary` | none: prints error statistics and the best/worst reefs. Only runs when named |
+
+A figure counts as present when all its output files exist (for the folder-based figures, when the
+folder is not empty), so redo a half-written folder by name. The domain, calibration data and
+model run are only loaded when a selected figure needs them: if everything exists, the script
+finishes immediately.
+
+The script reads the two NetCDF products written by `run_calibration`
+(`{out_dir}/params/calibrated_params.nc` and `{out_dir}/params/historic_init_cover.nc`, see
+[Parameter Extraction](#parameter-extraction)). `calibrated_params.nc` is handed to ADRIA as
+`load_domain(config; calib_params_fn=...)`, so `ADRIA.param_table(dom)` already returns the
+calibrated scenario. If either product is missing but `{out_dir}/results.dat` exists, they are
+rebuilt from it (without re-running the search) the first time a figure needs them.
+
+Which calibration is plotted is set by `out_dir` in `config.toml`.
+
+> **Julia version:** use the Julia version the `Manifest.toml` was resolved with (`julia_version`
+> at the top of the file, e.g. `julia +1.11.9 --project=. ...` with juliaup). Other versions may fail
+> to precompile the environment.
 
 ## Initial Coral Cover
 
@@ -211,8 +238,14 @@ Expects cover of shape `[timesteps x taxa x size_class x location]`
   labelled `functional_group`, `size_class`, `cb_calib_group`, `accel_param`, and
   `depth_atten_param` axes. Variables: `linear_extension`, `mb_rate`, `dist_mean`,
   `dist_std`, `linear_extension_scale`, `mb_rate_scale`, `growth_acceleration`,
-  `depth_attenuation`. Note `dist_mean` and `dist_std` are 1-D over `functional_group` only
-  — both are calibrated per group and shared by that group's size classes.
+  `depth_attenuation`, `dist_mean_initial`. `dist_std` and `dist_mean_initial` are 1-D over
+  `functional_group`: both are calibrated per group and shared by that group's size classes.
+  `dist_mean` is the heat tolerance at the **end** of the historical run, per `functional_group`
+  and `size_class`: forecasts start from where the history ends, so this is the value ADRIA
+  loads as the initial tolerance. It is the cover-weighted mean over locations of the
+  tolerance after the last bleaching update (`coral_dhw_final` from `ADRIA.run_model`), and
+  `dist_mean_initial` keeps the calibrated starting value used for the historical run
+  (`viz_results.jl` swaps it back in when it re-runs the history).
 - **`historic_init_cover.nc`** — GBR-wide historical initial coral cover with
   observation-based overrides applied at LTMP and photogrammetry sites
   (see [Initial Coral Cover](#initial-coral-cover)).

@@ -11,6 +11,21 @@ Reshape ordering follows the layout produced by `sc_fg_param_idxs` and
   parameter block as a length-`N_TAXA` vector rather than from the coral block
 - `linear_extension_scale`, `mb_rate_scale`: flat order is group-slowest, biogroup-fastest
   → reshape `(n_biogroups, n_groups)` then permute to `(n_groups, n_biogroups)`
+
+# Arguments
+- `calibrated_params` : flat calibrated-parameter vector
+- `param_idxs` : start/end indices of each parameter block within `calibrated_params`
+- `coral_param_names` : names of the coral parameters in the coral block, in vector order
+- `biogroups_ordering` : calibration biogroup (`CB_CALIB_GROUPS`) ids
+- `growth_accel_names` : names of the growth acceleration parameters, in vector order
+- `depth_atten_names` : names of the depth attenuation parameters (ADRIA's `DepthAttenuation`
+  field names)
+
+# Keyword arguments
+- `dist_mean_end` : heat tolerance at the end of the historical run, `(n_groups, n_sizes)`
+  (see `end_of_history_dist_mean`). When given, the `dist_mean` variable holds these values
+  (the state forecasts start from) and the calibrated initial per-group value is stored as
+  `dist_mean_initial`. When `nothing`, `dist_mean` is the calibrated initial value.
 """
 function build_params_dataset(
     calibrated_params::Vector{Float64},
@@ -18,7 +33,8 @@ function build_params_dataset(
     coral_param_names,
     biogroups_ordering::Vector{Int64},
     growth_accel_names::Vector{String},
-    depth_atten_names::Vector{String}
+    depth_atten_names::Vector{String};
+    dist_mean_end::Union{Nothing,AbstractMatrix{<:Real}}=nothing
 )::Dataset
     fgroup_names = ADRIA.functional_group_names()
     n_biogroups = length(biogroups_ordering)
@@ -65,13 +81,30 @@ function build_params_dataset(
     height = accel_params[occursin.(Ref("height"), growth_accel_names)]
     mid = accel_params[occursin.(Ref("midpoint"), growth_accel_names)]
 
+    dist_mean_initial = calibrated_params[param_idxs[11]:param_idxs[12]]
+    dist_mean_vars = if isnothing(dist_mean_end)
+        (; dist_mean=_fg(dist_mean_initial, "DHW tolerance distribution mean"))
+    else
+        (;
+            dist_mean=YAXArray(
+                (fg_axis, sc_axis),
+                Matrix{Float64}(dist_mean_end),
+                Dict(
+                    "description" => "DHW tolerance distribution mean at the end of the historical run (start of forecasts), per functional group and size class",
+                    "units" => "DHW"
+                )
+            ),
+            dist_mean_initial=_fg(
+                dist_mean_initial,
+                "Calibrated DHW tolerance distribution mean at the start of the historical run"
+            )
+        )
+    end
+
     return Dataset(;
         linear_extension=_fg_sc(le_mask, "Linear extension rate", "m"),
         mb_rate=_fg_sc(mb_mask, "Background mortality rate"),
-        dist_mean=_fg(
-            calibrated_params[param_idxs[11]:param_idxs[12]],
-            "DHW tolerance distribution mean"
-        ),
+        dist_mean_vars...,
         dist_std=_fg(
             calibrated_params[param_idxs[9]:param_idxs[10]],
             "DHW tolerance distribution standard deviation"
@@ -128,10 +161,57 @@ function build_init_cover_dataset(
 end
 
 """
-    export_calibration_products(dom, init_cover_sample, location_types, calibrated_params, param_idxs, coral_param_names, growth_accel_names, depth_atten_names, observations, biogroup_ord; out_dir)::String
+    _historical_end_dist_mean(dom, init_cover_sample, location_types, calibrated_params, ...)::Matrix{Float64}
+
+Run the calibrated historical period (as in the calibration objective) and return the
+cover-weighted mean heat tolerance per `(group, size class)` at its end.
+"""
+function _historical_end_dist_mean(
+    dom,
+    init_cover_sample::Vector{Float64},
+    location_types::AbstractVector{Int64},
+    calibrated_params::Vector{Float64},
+    param_idxs::Vector{Int64},
+    coral_param_names,
+    growth_accel_names::Vector{String},
+    depth_atten_names::Vector{String},
+    dist_std_names::Vector{String},
+    dist_mean_names::Vector{String},
+    observations::LocationDataStore,
+    biogroup_ord::Vector{Int64}
+)::Matrix{Float64}
+    run_dom = copy(dom)
+    run_dom.init_coral_cover = copy(dom.init_coral_cover)
+    construct_cover!(run_dom, init_cover_sample, location_types)
+
+    local_dom, scen = setup_run(
+        run_dom, calibrated_params;
+        param_names=coral_param_names,
+        growth_accel_names=growth_accel_names,
+        depth_atten_names=depth_atten_names,
+        dist_std_names=dist_std_names,
+        dist_mean_names=dist_mean_names,
+        param_idxs=param_idxs,
+        observations=observations,
+        biogroup_ord=biogroup_ord
+    )
+    res = ADRIA.run_model(local_dom, scen[1, :]; apply_allee_effect=false)
+    initial = permutedims(reshape(
+        Float64.(ADRIA.to_coral_spec(scen[1, :]).dist_mean), N_SIZE_CLASSES, N_TAXA
+    ))
+
+    return end_of_history_dist_mean(
+        res.coral_dhw_final, Array(res.raw)[end, :, :, :], ADRIA.loc_k_area(local_dom), initial
+    )
+end
+
+"""
+    export_calibration_products(dom, init_cover_sample, location_types, calibrated_params, param_idxs, coral_param_names, growth_accel_names, depth_atten_names, observations, biogroup_ord; dist_std_names, dist_mean_names, out_dir)::String
 
 Write the two NetCDF products of a calibration run to `{out_dir}/params/`:
-`calibrated_params.nc` (ADRIA `calib_params_fn` input) and `historic_init_cover.nc`.
+`calibrated_params.nc` (ADRIA `calib_params_fn` input; its `dist_mean` is the heat
+tolerance at the END of the historical run, with the calibrated starting value in
+`dist_mean_initial`) and `historic_init_cover.nc`.
 
 Returns the `params/` directory path. Existing files are overwritten.
 """
@@ -146,6 +226,8 @@ function export_calibration_products(
     depth_atten_names::Vector{String},
     observations::LocationDataStore,
     biogroup_ord::Vector{Int64};
+    dist_std_names::Vector{String},
+    dist_mean_names::Vector{String},
     out_dir::String
 )::String
     # ADRIA names its per-biogroup factors `*_cb_group_<i>_*` with `i` positional (1:n).
@@ -160,10 +242,16 @@ function export_calibration_products(
     params_dir_path = joinpath(out_dir, "params")
     mkpath(params_dir_path)
 
+    dist_mean_end = _historical_end_dist_mean(
+        dom, init_cover_sample, location_types, calibrated_params, param_idxs,
+        coral_param_names, growth_accel_names, depth_atten_names, dist_std_names,
+        dist_mean_names, observations, biogroup_ord
+    )
+
     savedataset(
         build_params_dataset(
             calibrated_params, param_idxs, coral_param_names, biogroup_ord,
-            growth_accel_names, depth_atten_names
+            growth_accel_names, depth_atten_names; dist_mean_end
         );
         path=joinpath(params_dir_path, "calibrated_params.nc"),
         driver=:netcdf,

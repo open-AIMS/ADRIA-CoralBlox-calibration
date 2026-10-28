@@ -34,18 +34,27 @@ function params_vector_from_dataset(
     params[param_idxs[3]:param_idxs[4]] .= vec(ga)
     params[param_idxs[7]:param_idxs[8]] .= Array(ds.depth_attenuation)
     params[param_idxs[9]:param_idxs[10]] .= Array(ds.dist_std)
-    params[param_idxs[11]:param_idxs[12]] .= Array(ds.dist_mean)
+    # `dist_mean` holds the end-of-history tolerance per (group, size class) when
+    # `dist_mean_initial` exists; the search-space value is the latter
+    dist_mean = :dist_mean_initial in keys(ds.cubes) ? ds.dist_mean_initial : ds.dist_mean
+    params[param_idxs[11]:param_idxs[12]] .= Array(dist_mean)
     return params
 end
 
 """
     plot_calibrated_params(params, sample_bounds, param_idxs, coral_param_names,
-        growth_accel_names, depth_atten_names, biogroups_ordering; fig_size)
+        growth_accel_names, depth_atten_names, biogroups_ordering; dist_mean_end, fig_size)
 
 Plot every calibrated parameter against its search bounds in a three-column figure. Each
 block of related parameters has its own x-axis, since magnitudes differ by orders. Bars span
 the search bounds; points are the calibrated values, drawn in red when within
 $(round(Int, 100 * _PARAM_EDGE_TOL))% of the bound range of either edge (the search ran into its box).
+
+`params` holds the calibrated initial `dist_mean` (the searched value). If `dist_mean_end`
+(`(n_groups, n_sizes)`, the end-of-history tolerance stored in `calibrated_params.nc`) is
+given, it is drawn as green diamonds, one per size class, next to the initial value. The
+diamond size grows with the size class index while its shade gets lighter, and larger classes
+are drawn first so the smaller ones stay in front.
 """
 function plot_calibrated_params(
     params::Vector{Float64},
@@ -55,6 +64,7 @@ function plot_calibrated_params(
     growth_accel_names::Vector{String},
     depth_atten_names::Vector{String},
     biogroups_ordering::Vector{Int64};
+    dist_mean_end::Union{Nothing,AbstractMatrix{<:Real}}=nothing,
     fig_size::Tuple{Int,Int}=(1800, 1500)
 )::Figure
     fg_names = string.(ADRIA.functional_group_names())
@@ -84,7 +94,7 @@ function plot_calibrated_params(
     blocks = [
         [
             ("Linear extension (m)", coral_block(le_mask, "linear_extension")...),
-            ("DHW tolerance mean", collect(param_idxs[11]:param_idxs[12]), fg_names),
+            ("DHW tolerance mean (● initial, ◆ end, by size class)", collect(param_idxs[11]:param_idxs[12]), fg_names),
             ("DHW tolerance std", collect(param_idxs[9]:param_idxs[10]), fg_names),
             ("Depth attenuation", collect(param_idxs[7]:param_idxs[8]), depth_atten_names),
         ],
@@ -126,6 +136,20 @@ function plot_calibrated_params(
                 ax, vals, collect(ys);
                 color=ifelse.(at_edge, "#D81B60", "#222222"), markersize=7
             )
+            if startswith(title, "DHW tolerance mean") && !isnothing(dist_mean_end)
+                n_sizes = size(dist_mean_end, 2)
+                size_idx = repeat(1:n_sizes; inner=size(dist_mean_end, 1))
+                # largest size class first, so the smaller (darker) diamonds sit on top
+                draw_order = sortperm(size_idx; rev=true)
+                scatter!(
+                    ax,
+                    vec(Float64.(dist_mean_end))[draw_order],
+                    repeat(collect(ys); outer=n_sizes)[draw_order];
+                    marker=:diamond, color=size_idx[draw_order], colormap=Reverse(:Greens),
+                    colorrange=(1, n_sizes + 3), markersize=5 .+ 1.5 .* size_idx[draw_order],
+                    strokewidth=0.5, strokecolor=("#1B5E20", 0.6)
+                )
+            end
             rowsize!(gl, row, Auto(length(idxs) + 2))
         end
     end
