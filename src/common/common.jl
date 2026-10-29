@@ -28,7 +28,9 @@ include("calib_setup.jl")
 include("cover_construction.jl")
 include("bootstrap_stats.jl")
 include("perf_metrics.jl")
+include("dist_mean_penalty.jl")
 include("param_bounds.jl")
+include("dist_mean_end_of_history.jl")
 include("params_extraction.jl")
 include("params_metadata.jl")
 
@@ -79,7 +81,7 @@ export LocationDataStore,
        N_PARAMS,
        STRIDE,
        N_GROWTH_ACCEL_PARAMS,
-       LIN_EXT_LB_FACTOR,
+       LIN_EXT_LB_FACTORS,
        LIN_EXT_UB_FACTOR,
        MB_RATE_LB_FACTOR,
        MB_RATE_UB_FACTOR,
@@ -96,6 +98,9 @@ export LocationDataStore,
        DHW_TOL_MEAN_UB_FACTOR,
        DHW_TOL_STD_LB_FACTOR,
        DHW_TOL_STD_UB_FACTOR,
+       DIST_MEAN_ORDER_SCALE,
+       DIST_MEAN_ORDER_WEIGHT,
+       dist_mean_order_penalty,
        N_DIST_MEAN_PARAMS,
        N_DIST_STD_PARAMS,
        DEPTH_ATTEN_PARAM_NAMES,
@@ -117,6 +122,7 @@ export LocationDataStore,
        setup_run,
        build_params_dataset,
        build_init_cover_dataset,
+       end_of_history_dist_mean,
        export_calibration_products,
        CalibrationConfig,
        load_config,

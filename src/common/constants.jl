@@ -41,11 +41,18 @@ const N_GROWTH_ACCEL_PARAMS = 3
 
 # --- Parameter bound constants (param_bounds.jl) ----------------------------
 
-# Linear extension / background mortality bounds: +/-10% of the EcoRRAP mean
-const LIN_EXT_LB_FACTOR = 0.9
-const LIN_EXT_UB_FACTOR = 1.1
-const MB_RATE_LB_FACTOR = 0.9
-const MB_RATE_UB_FACTOR = 1.1
+# Linear extension bounds, as factors of the base value. The lower factor is per functional
+# group (tabular, corymbose Acropora, corymbose non-Acropora, small massives, large massives):
+# the box is proportional to the base value, so the slow-growing massives would otherwise get
+# the narrowest absolute range and need a wider relative one. From size class 2 onwards the
+# upper bound is also limited to the largest base value that keeps worst-case growth within the
+# class width (see CalibConfig).
+const LIN_EXT_LB_FACTORS = (0.7, 0.7, 0.7, 0.5, 0.5)
+const LIN_EXT_UB_FACTOR = 1.2
+
+# Background mortality bounds: +/-30% of the base value, capped to the valid [0, 1] range
+const MB_RATE_LB_FACTOR = 0.7
+const MB_RATE_UB_FACTOR = 1.3
 
 # Linear extension scale factor bounds
 const LIN_EXT_SCALE_LB = 0.7
@@ -98,12 +105,21 @@ const DHW_TOL_MEAN_UB_FACTOR = 1.5
 const DHW_TOL_STD_LB_FACTOR = 0.75
 const DHW_TOL_STD_UB_FACTOR = 1.25
 
+# Penalty on initial `dist_mean` values that break the expected order across groups (tabular
+# Acropora < corymbose groups < massives, see `dist_mean_order_penalty`). `SCALE` is
+# roughly the mean of the :legacy `dist_mean` anchors (DHW-weeks) and fixes the normalisation
+# across candidates. `WEIGHT` was chosen to be of the order of the `fg_corr * 2.0` objective
+# term; it is not tuned against logged objective values.
+const DIST_MEAN_ORDER_SCALE = 5.0
+const DIST_MEAN_ORDER_WEIGHT = 2.0
+
 # Number of calibrated `dist_mean` / `dist_std` values: one per functional group each
 const N_DIST_MEAN_PARAMS = N_TAXA
 const N_DIST_STD_PARAMS = N_TAXA
 
 # Serialized-parameter-vector schema version, recorded in each result's `.meta.toml`
 # sidecar (see `write_params_metadata`/`load_calibrated_params`). Bump whenever
-# CalibConfig's param_idxs/sample_bounds shape changes, so older serialized results are
-# rejected rather than silently reinterpreted under the current schema.
-const PARAM_SCHEMA_VERSION = 6
+# CalibConfig's param_idxs/sample_bounds shape changes, or ADRIA's size class edges change
+# (per-size-class values are meaningless under different edges), so older serialized
+# results are rejected rather than silently reinterpreted under the current schema.
+const PARAM_SCHEMA_VERSION = 7
